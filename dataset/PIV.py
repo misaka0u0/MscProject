@@ -11,9 +11,9 @@ frame_b = tools.imread('./image2.bmp')
 # img1 = ax[0].imshow(frame_a, cmap = plt.cm.gray)
 # img2 = ax[1].imshow(frame_b, cmap = plt.cm.gray)
 
-winsize = 15 # pixels, interrogation window size in frame A
-searchsize = 18  # pixels, search in image B
-overlap = 5 # pixels, 50% overlap
+winsize = 32 # pixels, interrogation window size in frame A
+searchsize = 38  # pixels, search in image B
+overlap = 12 # pixels, 50% overlap
 dt = 0.02 # sec, time interval between pulses
 
 
