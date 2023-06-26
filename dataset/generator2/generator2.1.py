@@ -4,7 +4,7 @@ from PIL import Image
 
 width, height = 511, 369
 radius = 2
-num_points = 300
+num_points = 30
 intensity = 125
 
 # initialise the image
@@ -20,8 +20,10 @@ ys = np.random.choice(range(radius, height - radius), size=[num_points, 1])
 points2 = np.hstack([xs, ys])
 
 # plot the particle with velovity v1 for particle group1 and v2 for group 2
-v1 = np.random.randint(-10, 10, dtype=np.int8, size=(1, 2))
-v2 = np.random.randint(-10, 10, dtype=np.int8, size=(1, 2))
+# v1 = np.random.randint(-3, 3, dtype=np.int8, size=(1, 2))
+# v2 = np.random.randint(-3, 3, dtype=np.int8, size=(1, 2))
+v1 = [ 2, 4]
+v2 = [-4, -4]
 print(v1, v2)
 
 def drawPoint(img, x, y, half_size, intensity):
@@ -47,5 +49,5 @@ for points_group in [points1, points2]:
 file1 = Image.fromarray(img1.T)
 file2 = Image.fromarray(img2.T)
 
-file1.save('./particles1.bmp')
-file2.save('./particles2.bmp')
+file1.save('./image1.bmp')
+file2.save('./image2.bmp')

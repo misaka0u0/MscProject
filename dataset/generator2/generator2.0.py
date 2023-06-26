@@ -8,15 +8,15 @@ imageWidth = 511
 imageHeight = 369
 
 # Set the velocity vector for all particles
-velocityX = 12  
-velocityY = 15  
+velocityX = 2  
+velocityY = 4  
 
 # Generate an initial image 
 imageData1 = np.zeros((imageWidth, imageHeight), dtype=np.uint8)
 imageData2 = np.zeros((imageWidth, imageHeight), dtype=np.uint8)
 
 #Generate randomly placed particles, and include parameters
-numPaticles = 500
+numPaticles = 80
 particleRadius = 2
 particleIntensity = 125 
 
@@ -69,5 +69,5 @@ image1 = Image.fromarray(imageData1.T)
 image2 = Image.fromarray(imageData2.T)
 
 # Save the images in .bmp format
-image1.save('image1.bmp')
-image2.save('image2.bmp')
+image1.save('./image1.bmp')
+image2.save('./image2.bmp')

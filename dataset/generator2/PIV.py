@@ -1,6 +1,6 @@
 from openpiv import tools, pyprocess, validation , filters, scaling
 
-import numpy as np 
+import numpy as np
 import matplotlib.pyplot as plt
 import imageio
 
@@ -24,20 +24,26 @@ u0, v0, sig2noise = pyprocess.extended_search_area_piv(frame_a.astype(np.int32),
                                                        dt=dt, 
                                                        search_area_size=searchsize, 
                                                        sig2noise_method='peak2peak')
-print(u0,v0)
+# print(u0,v0)
+# print(sig2noise)
 
 x, y = pyprocess.get_coordinates( image_size=frame_a.shape, 
-                                 search_area_size=searchsize, 
-                                 overlap=overlap )
+                                  search_area_size=searchsize, 
+                                  overlap=overlap )
 
 flags = validation.sig2noise_val( sig2noise, 
-                                 threshold = 1.05 )
+                                  threshold = 1.05 )
+
+flags_g = validation.global_val( u0, v0, (-15, 15), (-15, 15) )
+# flags = flags | flags_g
 
 u2, v2 = filters.replace_outliers( u0, v0, 
                                    flags,
                                    method='localmean', 
                                    max_iter=3, 
                                    kernel_size=3)
+
+# print(flags)
 
 x, y, u3, v3 = scaling.uniform(x, y, u2, v2, 
                                scaling_factor = 96.52 ) # 96.52 microns/pixel
@@ -55,3 +61,4 @@ tools.display_vector_field('Analysis.txt',
                            image_name='./image1.bmp');
 
 plt.show()
+
