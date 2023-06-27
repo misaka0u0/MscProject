@@ -4,7 +4,7 @@ from PIL import Image
 from typing import Optional
 
 num_groups = 1
-num_points = 80
+num_points = 200
 W, H = 511, 369
 radius = 2
 Vmax = 35
