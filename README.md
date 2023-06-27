@@ -34,6 +34,16 @@ In microscopic particle image velocimetry (μPIV) the **entire volume of a flowf
  + emit light isotropically  
 If this is assumed, the fluorescent particles are all illuminated equally and are of identical diameters.
 
+**correlation weighting function**
+
+The correlation weighting function(given by microscope) gives a function to show how out-of-plane particles affect as the distance changes
+and it can be used to calculate the convolution for applying it. Ideal microscopy has a bandpass filter as correlation weighting function.
+depth of field may same as it or can be explained.
+
+**confocal microscopy**
+
+[A Confocal Endoscope for Cellular Imaging](https://doi.org/10.15302/J-ENG-2015081) can describe how the confocal microscope work.
+
 ### SNR (Signal to Noise Ratio): why it is important in PIV
 
 xxxx
@@ -123,6 +133,10 @@ dt = 0.02 # sec, time interval between pulses
 Generate models by myself first to understand particle movement and PIV better.
 The code included in file dataset, Generator 1.0 is the very early one which can not be used. generator 2 is used to generate random position particles in the same velocity or 2 groups of particles moving at different velocities. Then the last one generator 3.0 provide a more elegant way to create particles with size and velocity changeable.
 
+correlation maps 
+
+[cross correlation](http://paulbourke.net/miscellaneous/correlate/)
+disscussion on cross-correlation in zickus's dissertation 2.1.3
 
 ### Brainstorm
 
@@ -137,3 +151,4 @@ correlation weighting function.
 ## Section4. Discussion
 
 > factors affect the correlation map (how the result quality perform)
+disscussion on cross-correlation in zickus's dissertation 2.1.3
