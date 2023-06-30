@@ -16,7 +16,7 @@ imageData1 = np.zeros((imageWidth, imageHeight), dtype=np.uint8)
 imageData2 = np.zeros((imageWidth, imageHeight), dtype=np.uint8)
 
 #Generate randomly placed particles, and include parameters
-numPaticles = 80
+numPaticles = 2000
 particleRadius = 2
 particleIntensity = 125 
 

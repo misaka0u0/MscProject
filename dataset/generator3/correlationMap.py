@@ -6,10 +6,10 @@ from skimage.io import imread
 image1 = imread("./image1.bmp")
 image2 = imread("./image2.bmp")
 
-win_size = 128
+win_size = 38
 
-a_win = image1 [:win_size, :win_size].copy()
-b_win = image2 [:win_size, :win_size].copy()
+a_win = image1 [100: 200, 150: 250].copy()
+b_win = image2 [100: 200, 150: 250].copy()
 
 from scipy.signal import correlate
 

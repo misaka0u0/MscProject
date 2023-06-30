@@ -11,9 +11,9 @@ frame_b = tools.imread('./data/DataSet1/657325.tif')
 # img1 = ax[0].imshow(frame_a, cmap = plt.cm.gray)
 # img2 = ax[1].imshow(frame_b, cmap = plt.cm.gray)
 
-winsize = 6 # pixels, interrogation window size in frame A
-searchsize = 8  # pixels, search in image B
-overlap = 2 # pixels, 50% overlap
+winsize = 16 # pixels, interrogation window size in frame A
+searchsize = 28  # pixels, search in image B
+overlap = 8 # pixels, 50% overlap
 dt = 0.02 # sec, time interval between pulses
 
 

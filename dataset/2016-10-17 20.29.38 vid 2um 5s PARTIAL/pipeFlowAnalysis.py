@@ -18,8 +18,8 @@ def func( args ):
     #####################
 
     # read images into numpy arrays
-    frame_a  = tools.imread( path / file_a )
-    frame_b  = tools.imread( path.joinpath(file_b) )
+    frame_a  = tools.imread( PATH / file_a )
+    frame_b  = tools.imread( PATH.joinpath(file_b) )
 
     frame_a = (frame_a*1024).astype(np.int32)
     frame_b = (frame_b*1024).astype(np.int32)
@@ -36,5 +36,5 @@ def func( args ):
     tools.save('test2_%03d.txt' % counter, x, y, u, v, mask)
     tools.display_vector_field('test2_%03d.txt' % counter)
 
-    task = tools.Multiprocesser( data_dir = PATH, pattern_a = '', pattern_b = '')
-    task.run(func = func, n_cpus = 1156)
+task = tools.Multiprocesser( data_dir = PATH, pattern_a = '65*.tif', pattern_b = '(1+2),(3+4)')
+task.run(func = func, n_cpus = 4)
