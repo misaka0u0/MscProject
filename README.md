@@ -22,11 +22,32 @@ From Wikipedia: “Particle image velocimetry (PIV) is an optical method of flow
 
 ### What is the problem met when using PIV (Project specification)
 
-When
+[Out-of-focus effects on particle image visibility and correlation in microscopic particle image velocimetry
+](https://doi.org/10.1007/s003480070018)
+
+Different from the light sheet PIV,
+In microscopic particle image velocimetry (μPIV) the **entire volume of a flowfield is illuminated**, resulting in all of the particles in the field of view contributing to the image, either by forming discrete particle images or contributing to a background glow. The theory of PIV is expanded to encompass this situation. Equations are derived for a particle image intensity function that yields image diameter and intensity as a function of distance from the object plane, as well as an equation for a new quantity, termed particle visibility. The effect of changing experimental parameters is discussed. Next, the contribution of out-of-focus particles to the correlation function is addressed. A weighting function that can be used to calculate either velocity measurement bias or the distance from the object plane beyond which particles no longer significantly contribute to the correlation function is derived. A new experimental parameter, the depth of correlation, is then introduced.
+
+ Several assumptions are made to deriving a model.
+ + all the seed particles have the same diameter, (with a rms variation of less than 5% for example)
+ + Then, further assumed the entire field of view is illuminated with equal laser intensity
+ + emit light isotropically  
+If this is assumed, the fluorescent particles are all illuminated equally and are of identical diameters.
+
+**correlation weighting function**
+
+The correlation weighting function(given by microscope) gives a function to show how out-of-plane particles affect as the distance changes
+and it can be used to calculate the convolution for applying it. Ideal microscopy has a bandpass filter as correlation weighting function.
+depth of field may same as it or can be explained.
+
+**confocal microscopy**
+
+[A Confocal Endoscope for Cellular Imaging](https://doi.org/10.15302/J-ENG-2015081) can describe how the confocal microscope work.
 
 ### SNR (Signal to Noise Ratio): why it is important in PIV
 
-The snr
+xxxx
+
 
 ### code for tutorial in OpenPIV as a tool
 
@@ -92,8 +113,42 @@ There are several questions I have met when adding the color bar:
 + Remember a make_axes_locatable lib needed
 + cax = divider.append_axes establish an empty colorbar, while plt.colorbar filling color in colorbar
 
+4. Basic arguments design
+
+```
+winsize = 32 # pixels, interrogation window size in frame A
+searchsize = 38  # pixels, search in image B
+overlap = 12 # pixels, 50% overlap
+dt = 0.02 # sec, time interval between pulses
+```
+
++ the size of interrogation window should be smaller than search window
++ the interrogation window should include any particles at least
++ search window size should be greater than any valid moving vectors
+
+
 ## Section2. Methodology and improvement
+
+1.
+Generate models by myself first to understand particle movement and PIV better.
+The code included in file dataset, Generator 1.0 is the very early one which can not be used. generator 2 is used to generate random position particles in the same velocity or 2 groups of particles moving at different velocities. Then the last one generator 3.0 provide a more elegant way to create particles with size and velocity changeable.
+
+correlation maps 
+
+[cross correlation](http://paulbourke.net/miscellaneous/correlate/)
+disscussion on cross-correlation in zickus's dissertation 2.1.3
+
+### Brainstorm
+
++ Use the functions in MATLAB as a feature extraction tool to improve(reduce time competitivity (not sure)).
++ The relationship between particle size (if can be different) and velocity can be determined (should be in higher dimensional Gaussian distribution). With the model established, the feature selected might be useful for training the model. Or particle(fluidic) moving mode with different container shape (pipe,square tube?) also can be used to analyse Wall Shear Stress (WSS) potentially.
++ Model migration. Particles moving in the fluid may also be considered for coherence. Light is particle as well. Find the similarity between light coherence and
+correlation weighting function.
+
 
 ## Section3. Results 
 
-## Section4. Comments
+## Section4. Discussion
+
+> factors affect the correlation map (how the result quality perform)
+disscussion on cross-correlation in zickus's dissertation 2.1.3
