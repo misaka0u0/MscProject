@@ -4,17 +4,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import imageio
 
-frame_a = tools.imread('./data/DataSet2/594586.tif')
-frame_b = tools.imread('./data/DataSet2/594587.tif')
+frame_a = tools.imread('./image1.bmp')
+frame_b = tools.imread('./image2.bmp')
 
-# 657326
 # fig,ax = plt.subplots(1,2)
 # img1 = ax[0].imshow(frame_a, cmap = plt.cm.gray)
 # img2 = ax[1].imshow(frame_b, cmap = plt.cm.gray)
 
-winsize = 16 # pixels, interrogation window size in frame A
-searchsize = 28  # pixels, search in image B
-overlap = 8 # pixels, 50% overlap
+winsize = 32 # pixels, interrogation window size in frame A
+searchsize = 38  # pixels, search in image B
+overlap = 12 # pixels, 50% overlap
 dt = 0.02 # sec, time interval between pulses
 
 
@@ -56,10 +55,10 @@ tools.save('Analysis.txt', x, y, u3, v3, flags)
 fig, ax = plt.subplots()
 tools.display_vector_field('Analysis.txt', 
                            ax=ax, scaling_factor=96.52, 
-                           scale=20, # scale defines here the arrow length
-                           width=0.0015, # width is the thickness of the arrow
+                           scale=50, # scale defines here the arrow length
+                           width=0.0035, # width is the thickness of the arrow
                            on_img=True, # overlay on the image
-                           image_name='./data/DataSet2/594586.tif');
-# 594586
+                           image_name='./image1.bmp');
+
 plt.show()
 

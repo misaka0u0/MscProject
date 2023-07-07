@@ -6,7 +6,7 @@ from skimage.io import imread
 image1 = imread("./image1.bmp")
 image2 = imread("./image2.bmp")
 
-win_size = 128
+win_size = 32
 
 a_win = image1 [:win_size, :win_size].copy()
 b_win = image2 [:win_size, :win_size].copy()
