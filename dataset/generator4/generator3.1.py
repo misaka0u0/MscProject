@@ -6,7 +6,7 @@ from PIL import Image
 from typing import Optional
 
 num_groups = 1
-num_points = 800
+num_points = 1500
 W, H = 511, 369 # x, y axis
 Length = 150 # z axis
 radius = 2.0 # radius on focal plane
