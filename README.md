@@ -30,7 +30,7 @@ PIV is based on statistically most, by estimate the motion of groups for velocit
 
 included in vytautas' thesis section 1.3.4 flow measurement techniques. 
 The piv and ptv, also termed as Eulerian and Lagrangian approach, are discribed in sevral cases in [Saidi's paper](https://doi.org/10.1016/j.atmosenv.2014.01.069) to illustrate the difference and criteria for selection.
-Also, Fig3 in Scharnowski's paper, ['Particle image velocimetry - Classical operating rules from today’s perspective'](https://doi.org/10.1016/j.optlaseng.2020.106185) denote the difference in result for PIV and PTV.
+Also, Fig3 in Scharnowski's paper, ['Particle image velocimetry - Classical operating rules from today’s perspective'](https://doi.org/10.1016/j.optlaseng.2020.106185) denote the difference in result for PIV and PTV in a specific confdition.
 
 
 ### 1.3 Out of focus effect in PIV (Project specification)
