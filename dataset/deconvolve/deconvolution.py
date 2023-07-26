@@ -1,48 +1,36 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import imageio.v2 as imageio
+from PIL import Image
 
 from scipy.signal import convolve2d as conv2
 
 from skimage import color, data, restoration
 
-# rng = np.random.default_rng()
-# astro = color.rgb2gray(data.astronaut())
-psf = np.ones((5, 5)) / 25
-# astro = conv2(astro, psf, 'same')
-# # Add Noise to Image
-# astro_noisy = astro.copy()
-# astro_noisy += (rng.poisson(lam=25, size=astro.shape) - 10) / 255.
 
-# img = (rng.poisson(lam=100, size=astro.shape) - 10) / 255.
-# plt.imshow(img)
-
-img = imageio.imread("./generator4/image1.bmp")
-
-# psf = 
+psf = np.load('PSF.npy')
+# img = np.load('stk3d.npy')
+img = np.load('object.npy')
 
 
 # Restore Image using Richardson-Lucy algorithm
-deconvolved_RL = restoration.richardson_lucy(img, psf, num_iter=30)
+deconvolved_RL = restoration.richardson_lucy(img, psf, num_iter=5)
 
-plt.imshow(deconvolved_RL, cmap = plt.cm.gray)
-plt.show()
-# fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(8, 5))
-# plt.gray()
-
-# for a in (ax[0], ax[1], ax[2]):
-#        a.axis('off')
-
-# ax[0].imshow(astro)
-# ax[0].set_title('Original Data')
-
-# ax[1].imshow(astro_noisy)
-# ax[1].set_title('Noisy data')
-
-# ax[2].imshow(deconvolved_RL, vmin=astro_noisy.min(), vmax=astro_noisy.max())
-# ax[2].set_title('Restoration using\nRichardson-Lucy')
-
-
-# fig.subplots_adjust(wspace=0.02, hspace=0.2,
-#                     top=0.9, bottom=0.05, left=0, right=1)
+# plt.imshow(deconvolved_RL, cmap = plt.cm.gray)
 # plt.show()
+# 2d only
+
+import os
+# Ensure the directory for the images exists
+os.makedirs('./deconvolved_images', exist_ok=True)
+
+# Normalize the image data to 0-255
+deconvolved_RL = ((deconvolved_RL - deconvolved_RL.min()) * (1/(deconvolved_RL.max() - deconvolved_RL.min()) * 255)).astype('uint8')
+
+# Iterate over the image stack
+for i in range(deconvolved_RL.shape[0]):
+    # Convert numpy array to PIL image
+    img = deconvolved_RL[i]
+
+    # Save the image
+    Image.fromarray(img.T.astype(np.uint8)).save(f'./deconvolved_point/image_{i}.bmp')

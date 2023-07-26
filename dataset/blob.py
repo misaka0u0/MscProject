@@ -19,7 +19,7 @@ def DrawParticle(image, x, y, peak_intensity, particle_radius):
     image += peak_intensity * (np.sqrt(2) / particle_radius) * np.exp(-(((x-pixX)/particle_radius)**2 + ((y-pixY)/particle_radius)**2))
 
 # Draw a single example particle into the image
-DrawParticle(image, 50, 50, 1, 5.0)
+DrawParticle(image, 50, 50, 1, 2.0)
 # Display the image on screen
 plt.imshow(image, cmap='gray')
 plt.show()
