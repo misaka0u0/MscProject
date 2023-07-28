@@ -9,12 +9,11 @@ from skimage import color, data, restoration
 
 
 psf = np.load('PSF.npy')
-# img = np.load('stk3d.npy')
-img = np.load('object.npy')
+img = np.load('stk3d.npy')
 
 
 # Restore Image using Richardson-Lucy algorithm
-deconvolved_RL = restoration.richardson_lucy(img, psf, num_iter=5)
+deconvolved_RL = restoration.richardson_lucy(img, psf, num_iter=5,clip= False)
 
 # plt.imshow(deconvolved_RL, cmap = plt.cm.gray)
 # plt.show()
@@ -33,4 +32,4 @@ for i in range(deconvolved_RL.shape[0]):
     img = deconvolved_RL[i]
 
     # Save the image
-    Image.fromarray(img.T.astype(np.uint8)).save(f'./deconvolved_point/image_{i}.bmp')
+    Image.fromarray(img.T.astype(np.uint8)).save(f'./deconvolved_images/image_{i}.bmp')

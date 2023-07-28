@@ -52,14 +52,16 @@ If this is assumed, the fluorescent particles are all illuminated equally and ar
 
 The correlation weighting function(given by microscope) gives a function to show how out-of-plane particles affect as the distance changes, and can show the depth of correlation intuitively.
 and it can be used to calculate the convolution for applying it. Ideal microscopy has a bandpass filter as correlation weighting function.
-depth of field may same as it or can be explained.
+depth of field may same as it or can be explained.<br/>
 
-#### 1.3.3 **out of focus effects
+Although, the correlation weighting function is given by the microscope, have relationship with the NA(numerical aperture). In the model generation, correlation weighting is related to size and brightness of particles, which is also related to RL Rayleigh length (decided by wavelength, or frequency), they are in different way but result similar.
+
+#### 1.3.3 out of focus effects
 
 For miu-PIV, due to the volume illumination used in BF. DOC effects lead to the superposition of out-of-focus particles contribution, which made correlation peak broadening towards higher velocities in this particular flow scenario, as explained in Figure 3.9 in thesis.
 also, the relationship between doc, dof, and how it will affect the CC(cross-correlation matrix/maps), then the calculation of velocity is included in Fig. 2.15 in the thesis.
 
-Vytautas' solve this out of focus effect by using light-sheet method, or termed as SPIM( Selective Plane Illumination Microscopy). However, this project aimed to use including but not limited to deconvolution technology to solve the problem given by out-of-focus effects. Reconstruct all the planes particles distributed from one miu-PIV image.
+Vytautas' solve this out of focus effect by using light-sheet method, or termed as SPIM( Selective Plane Illumination Microscopy). However, this project aimed to use including but not limited to deconvolution technology to solve the problem given by out-of-focus effects. Reconstruct all the planes particles distributed from one $\mu$-PIV image.
 
 #### 1.3.4 Others
 **confocal microscopy**
@@ -201,8 +203,19 @@ disscussion on cross-correlation in zickus's dissertation 2.1.3
 
 ### 2.4 deconvolution
 
+#### 2.4.1 2d deconvolution example
 
+[2d image deconvolution example](https://scikit-image.org/docs/stable/auto_examples/filters/plot_deconvolution.html)<br/>
+Here we use Richardson-Lucy deconvolution algorithm to perform our deconvolution as it can also deal with n dimension arrays.
+The astronaut image sample is used here to show how it works. First, convolve with a kernel(PSF), to obtain a blured image. Then, deconvolve that with the same PSF, the result was shown to be same as original one. Which means, the transform(convolution) with known PSF, can inversly recovered by deconvolution.
 
+#### 2.4.2 a simple model to deconvole
+
+#### 2.4.3 
+
+#### 2.4.4
+
+#### 2.5 deconvolution with correalation matrix
 
 ## Section3. Results 
 
