@@ -10,11 +10,11 @@ overlap = 12 # pixels, 50% overlap
 dt = 0.02 # sec, time interval between pulses
 
 
-# objectA = np.load('stkA.npy')
-# objectB = np.load('stkB.npy') 
+objectA = np.load('stkA.npy')
+objectB = np.load('stkB.npy') 
 
-objectA = np.load('deconvolved_RL1.npy')
-objectB = np.load('deconvolved_RL2.npy') 
+# objectA = np.load('deconvolved_RL1.npy')
+# objectB = np.load('deconvolved_RL2.npy') 
 
 velocity_stack = []
 for i in range(objectA.shape[0]):
@@ -41,6 +41,7 @@ for i in range(objectA.shape[0]):
 
     v0 = v0 / 96.52                    #scaling_factor = 96.52 # 96.52 microns/pixel
 
+
     velocity_stack.append(np.max(v0, axis=0))  # Using the maximum velocity value along y-axis for each layer
 
 # Convert to a numpy array for convenience
@@ -56,12 +57,13 @@ plt.ylabel('Z position')
 plt.title('Velocity Heatmap')
 plt.show()
 
-    # # velocity = np.max
-    # v0 = np.average(v0)
-    # v0 = np.max(v0)
-    # velocity_stack.append(v0)
 
-# print(velocity_stack)
+
+#     v0 = np.average(v0)
+#     # v0 = np.max(v0)
+#     velocity_stack.append(v0)
+
+# # print(velocity_stack)
 
 # x = range(objectA.shape[0])
 
@@ -84,4 +86,5 @@ plt.show()
 # plt.title('velocity profile')
 # plt.legend()
 # plt.grid(True)
+# plt.ylim([-4, 12])
 # plt.show()

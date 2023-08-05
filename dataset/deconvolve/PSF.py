@@ -42,7 +42,7 @@ def drawPoint(img, point: Point):
 
 
     #draw particles in blob
-    img += point.intensity * (np.sqrt(2) / half_size) * np.exp(-(((x - pixX.T) / half_size)**2 + ((y - pixY.T) / half_size)**2))
+    img += point.intensity * ((np.sqrt(2 * np.pi) / half_size) ** 2) * np.exp(-(((x - pixX.T) / half_size)**2 + ((y - pixY.T) / half_size)**2))
     img = np.clip(img, 0, 255)
 
 
@@ -52,7 +52,7 @@ import os
 os.makedirs('./PSF', exist_ok=True)
 
 image_stack = []
-for dz in range(-Length, Length + 1, 20):  # Iterate over possible dz values
+for dz in range(-Length*2, Length*2 + 1, 10):  # Iterate over possible dz values
     np.random.seed(42)
     point_groups = []
     points = [Point(radius, dz=dz) for _ in range(num_points)]  # Initialize points with the current dz
@@ -68,7 +68,7 @@ for dz in range(-Length, Length + 1, 20):  # Iterate over possible dz values
             drawPoint(img1, p)
 
     image_stack.append(img1)
-    Image.fromarray(img1.T.astype(np.uint8)).save(f'./PSF/dz_{dz+150}.bmp')
+    Image.fromarray(img1.T.astype(np.uint8)).save(f'./PSF/dz_{dz+300}.bmp')
 
 # Convert the list of 2D arrays into a 3D numpy array
 image_stack_3d = np.stack(image_stack)

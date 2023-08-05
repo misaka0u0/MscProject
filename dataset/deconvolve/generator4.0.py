@@ -54,13 +54,20 @@ def drawPoint(img, point: Point):
 
 
     #draw particles in blob
-    img += point.intensity * (np.sqrt(2) / half_size) * np.exp(-(((x - pixX.T) / half_size)**2 + ((y - pixY.T) / half_size)**2))
+    img += point.intensity * ((np.sqrt(2 * np.pi) / half_size) ** 2) * np.exp(-(((x - pixX.T) / half_size)**2 + ((y - pixY.T) / half_size)**2))
     img = np.clip(img, 0, 255)
+
+import os
+
+# Check if the directories exist, and if not, create them
+os.makedirs('./image_stack1', exist_ok=True)
+os.makedirs('./image_stack2', exist_ok=True)
 
 
 
 image_stack1 = []
-for dz in range(-Length, Length + 1, 20):  # Iterate over possible dz values
+image_stack2 = []
+for dz in range(-Length, Length + 1, 10):  # Iterate over possible dz values
     np.random.seed(42)
     point_groups = []
     points = [Point(radius, dz=dz) for _ in range(num_points)]  # Initialize points with the current dz
@@ -78,49 +85,23 @@ for dz in range(-Length, Length + 1, 20):  # Iterate over possible dz values
             p.update()
             drawPoint(img2, p)
     image_stack1.append(img1)
+    image_stack2.append(img2)
+
+    # Save the images
+    Image.fromarray(img1.T.astype(np.uint8)).save(f'./image_stack1/dz_{dz+150}.bmp')
+    Image.fromarray(img2.T.astype(np.uint8)).save(f'./image_stack2/dz_{dz+150}.bmp')
 
 # Convert the list of 2D arrays into a 3D numpy array
-image_stack_3d = np.stack(image_stack1)
+image_stack1 = np.stack(image_stack1)
+image_stack2 = np.stack(image_stack2)
 
-# print(image_stack1)
-print(np.shape(image_stack1))
-print(np.shape(image_stack_3d))
 
-np.save('stk3d.npy', image_stack_3d)
+np.save('stkA.npy', image_stack1)
+np.save('stkB.npy', image_stack2)
 # data = np.load('filename.npy')
 
 # np.savetxt('stk1.txt', image_stack1)
 # np.savetxt('stk3d.txt', image_stack_3d)
 # np.savetxt only works for 1d or 2d array,
 # not a stack of 2d arrays or 3d
-
-
-
-
-# import os
-
-# # Check if the directories exist, and if not, create them
-# os.makedirs('./image_stack1', exist_ok=True)
-# os.makedirs('./image_stack2', exist_ok=True)
-
-# for dz in range(-Length, Length + 1, 20):  # Iterate over possible dz values
-#     np.random.seed(42)
-#     point_groups = []
-#     points = [Point(radius, dz=dz) for _ in range(num_points)]  # Initialize points with the current dz
-#     point_groups.append(points)
-
-#     # Initialize the images
-#     img1 = np.zeros([W, H])
-#     img2 = np.zeros([W, H])
-
-#     # Update and draw points
-#     for points in point_groups:
-#         for p in points:
-#             drawPoint(img1, p)
-#             p.update()
-#             drawPoint(img2, p)
-
-#     # Save the images
-#     Image.fromarray(img1.T.astype(np.uint8)).save(f'./image_stack1/dz_{dz+150}.bmp')
-#     Image.fromarray(img2.T.astype(np.uint8)).save(f'./image_stack2/dz_{dz+150}.bmp')
 

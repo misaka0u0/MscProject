@@ -9,7 +9,7 @@ from scipy.signal import correlate
 
 
 num_points = 1
-W, H = 20, 20 # x, y axis
+W, H = 40, 40 # x, y axis
 Length = 150 # z axis
 radius = 2.0 # radius on focal plane
 # Vz = 15 # velocity max caculated with V(y, z), flows through x-axis
@@ -17,7 +17,7 @@ Zr = 80 # Rayleigh length
 
 intensity = 125 # The max intensity, 'a' in Gaussian blob
 
-win_size = 20
+win_size = 40
 img1 = np.zeros([W, H])
 
 # Generate two arrays the same shape as the image.
