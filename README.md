@@ -166,7 +166,7 @@ The Adrian & Westerweel propose four “design rules” for PIV measurement argu
 #### 2.2.1 First model
 Generate models by myself first to understand particle movement, the out-of-focus effect, and the tool of PIV better.
 
-<image for the first model>
+![first model1](./img/model1_1.bmp)
 
 The first model is generated  immaturely, a group of particles are generated togrther as a large one, it is an ideal one with a enormous large particle and high speed that large enough interrogation window and search window should be use to find the result.
 
