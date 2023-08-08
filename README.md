@@ -1,7 +1,9 @@
 <header>
 
   # Msc Project
-_A backup, record and virsion control of my msc project_
+_A backup, record and virsion control of my msc project_]
+
+record is just for a record, need to be changed more academic.
 
   A brief introduction(modification needed):
   	Using video recorded looking down a microscope, it is possible to use blood cells as “tracer particles” to work out what the blood flow is (using particle image velocimetry, or PIV). However, it is known that some analysis methods contain subtle biases caused by out of focus cells, and these biases are hard to quantify - let alone correct for. This project will implement and evaluate one proposed strategy for correcting for bias. The methodology is based on the classic concept of an "inverse problem", as commonly found in physics: it is comparatively easy to predict what measurements will be made if you know the true underlying flow, and this can be leveraged to help solve the inverse problem (what is the true flow, given the measurements). The project will involve scientific image processing, and learning about and applying the mathematics of image formation and deconvolution. The project could potentially have a small experimental component, characterizing experimental images of tracer particles down a microscope, but this is not essential.
@@ -166,32 +168,48 @@ The Adrian & Westerweel propose four “design rules” for PIV measurement argu
 #### 2.2.1 First model
 Generate models by myself first to understand particle movement, the out-of-focus effect, and the tool of PIV better.
 
-![first model1](./img/model1_1.bmp)
+| image1                              | image2                              |
+| ----------------------------------- | ----------------------------------- |
+| ![first model1](./img/model1_1.bmp) | ![first model2](./img/model1_2.bmp) |
+
 
 The first model is generated  immaturely, a group of particles are generated togrther as a large one, it is an ideal one with a enormous large particle and high speed that large enough interrogation window and search window should be use to find the result.
 
 #### 2.2.2 Second model
 
-<image for the second model>
+| image1                              | image2                              |
+| ----------------------------------- | ----------------------------------- |
+| ![second model1](./img/model2_1.bmp) | ![second model2](./img/model2_2.bmp) |
 
-The models are generated more realistic that the particles distributed randomly on the canvas that should be able to divided into groups and assigned to velocities for each.
+The models are generated more realistic that the particles distributed randomly on the canvas to make the model special and easier to analyse the velocity distribution on the whole plane, but the real condition will not consist by only one velocity for all the particles.
 
 
 
 #### 2.2.3 Third model
 
-<image for the third model>
+| image1                              | image2                              |
+| ----------------------------------- | ----------------------------------- |
+| ![third model1](./img/model3_1.bmp) | ![third model2](./img/model3_2.bmp) |
 
-For this edition, the code was edited for a better expansibility, that the size, number of groups and velocity can be defined easily. Also, the particles are defined more realistic, not in square but have a shape in circular, and intensity distribute in gaussian distribution.
+For this edition, the code was edited for a better expansibility, that the size, number of groups and velocity can be defined easily. Here, two groups of particles with different velocity are generated. However, the particles are need to be defined more realistic, not shape in square and with uniform intensity overall. The model should be generated more general, instead to this, a circular shape with intensity in gaussian distribution.
 
 
 
 #### 2.2.4 Fourth model
 
-<image and include velocity distribution>
+| image1                              | image2                              |
+| ----------------------------------- | ----------------------------------- |
+| ![fourth model1](./img/model4_1.bmp) | ![fourth model2](./img/model4_2.bmp) |
 
-Final edition introduce the distribution on z-axis, the size would change along with the z-axis in a gaussian beam mode to work as particles/fluid flows in pipe.
+The gaussian distributed intensity is applied to the particles. Also, the velocity of particles depends on y axis added to analyse the spatial distribution of velocity.
 
+#### 2.2.4 Final model
+
+| image1                              | image2                              |
+| ----------------------------------- | ----------------------------------- |
+| ![final model1](./img/model5_1.bmp) | ![final model2](./img/model5_2.bmp) |
+
+The depth(z-axis) is added that particles in different depth have corresponding radius follow gaussian beam width distribution. The particles moves over range will be added back from another side.
 
 
 ### 2.3 PIV to anlyse the data
@@ -209,15 +227,43 @@ disscussion on cross-correlation in zickus's dissertation 2.1.3
 Here we use Richardson-Lucy deconvolution algorithm to perform our deconvolution as it can also deal with n dimension arrays.
 The astronaut image sample is used here to show how it works. First, convolve with a kernel(PSF), to obtain a blured image. Then, deconvolve that with the same PSF, the result was shown to be same as original one. Which means, the transform(convolution) with known PSF, can inversly recovered by deconvolution.
 
-#### 2.4.2 a simple model to deconvole
+#### 2.4.2  deconvole to deblur
 
-#### 2.4.3 
-
-#### 2.4.4
+Here we know how exactly the particle blured as depth changed, and this blur can be considered as convolution to original image. In this way, the blured images(in stack) can be inversely deblured by deconvolution by a proper chosen PSF.
 
 #### 2.5 deconvolution with correalation matrix
 
+However, the method of doing deconvolution to the 3d image is limited by several factors. First, the 3d image cannot be obtained in one time, the moved particles in different layer would significantly affect the result. Second, in real fluid tissues, particles may not in same size, that the PSF may not possible to be chosen properly.
+
+Thus, compare to deal with 3d image itself, it would be better to deal with the correlation matrix. The correlation matrix represent velocity from the image. Dealing with the correlation matrix directly can prevent being affected by other factors.
+
 ## Section3. Results 
+
+### 3.1 multi-velocity effect
+| velocity in group1                     | velocity in group2                             |
+| ----------------------------------- | ----------------------------------- |
+| ![correlation Matrix1](./img/VelG1.jpg) | ![correlation Matrix2](./img/VelG2.jpg) |
+
+![correlation Combination](./img/VelCom.jpg)
+
+It can be seen from the figure above, the correlation matrix of combined particles is sum of each correlation matrix, some noise are also included. Because of this, the particles in different velocities seperation can increase PIV velocity analysis accuracy.
+
+
+### 3.2 PIV velocity
+
+![piv](./img/PIV1.png)
+
+
+### 3.3 deconvolution
+
+| origin velocity profile          | deconvolved result           |
+| ----------------------------------- | ----------------------------------- |
+| ![origin](./img/velocityProfile_Z.png) | ![deconvolved](./img/deconvolvedVelocityProfile_Z.png) |
+
+from the figure above, it can be easily find the result of velocity profile of deconvolved image have a better velocity curve to  fitted agree with the expected velocity generation function than the origin one, and more smooth than origin with less noise.
+
+### 3.4 correlation matrix deconvolution
+
 
 ## Section4. Discussion
 
