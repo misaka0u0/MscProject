@@ -27,8 +27,8 @@ pixX, pixY = np.meshgrid(np.arange(W), np.arange(H))
 
 class Point:
     def __init__(self, size: float, dz: Optional[int] = None):
-        self.x = 10
-        self.y = 10
+        self.x = 20
+        self.y = 20
         self.z = 0
         self.dz = dz if dz is not None else 0
         self.size = size * np.sqrt(1 + ((self.z - self.dz) / Zr) ** 2)  # + 0.02 * self.z
@@ -69,7 +69,7 @@ for dz in range(-Length*2, Length*2 + 1, 10):  # Iterate over possible dz values
 
     a_win = img1 [:win_size, :win_size].copy()
     b_win = img1 [:win_size, :win_size].copy()
-    cross_corr = correlate(b_win - b_win.mean(), a_win - a_win.mean(), method="fft")
+    cross_corr = correlate(b_win, a_win, method="fft")
 
     correlation_stack.append(cross_corr)
 
@@ -87,4 +87,15 @@ correlation_stack = np.stack(correlation_stack)
 np.save('PSF.npy', correlation_stack)
 # data = np.load('filename.npy')
 
+
+
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = plt.figure()
+ax = fig.add_subplot(projection="3d")
+Y, X = np.meshgrid(np.arange(correlation_stack.shape[1]), np.arange(correlation_stack.shape[2]))
+
+ax.plot_surface(Y, X, correlation_stack[0].T, cmap='jet', linewidth=0.2)  # type: ignore
+plt.title("Correlation map — peak is the most probable shift")
+plt.show()
 

@@ -115,3 +115,13 @@ plt.show()
 # plt.ylabel('Z position')
 # plt.title('Velocity Heatmap')
 # plt.show()
+
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = plt.figure()
+ax = fig.add_subplot(projection="3d")
+Y, X = np.meshgrid(np.arange(deconvolved_Matrix.shape[1]), np.arange(deconvolved_Matrix.shape[2]))
+
+ax.plot_surface(Y, X, deconvolved_Matrix[0].T, cmap='jet', linewidth=0.2)  # type: ignore
+plt.title("Correlation map — peak is the most probable shift")
+plt.show()

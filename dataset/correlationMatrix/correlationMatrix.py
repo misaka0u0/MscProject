@@ -12,7 +12,7 @@ from scipy.signal import correlate
 objectA = np.load('stkA.npy')
 objectB = np.load('stkB.npy')
 
-win_size = 369
+win_size = 32
 
 import os
 # Check if the directories exist, and if not, create them
@@ -71,7 +71,7 @@ os.makedirs('./CorrelationMatrix', exist_ok=True)
 
 
 int_win_size = np.array([32, 32])
-search_win_size = np.array([36, 36])
+search_win_size = np.array([76, 76])#36 - 32 = 4
 half_int_win_size = int_win_size // 2
 half_search_win_size = search_win_size // 2
 corr_win_size = search_win_size - int_win_size + 1
@@ -89,6 +89,7 @@ def correlate_and_combine(
     xs = np.arange(half_int_win_size[1], img1.shape[1], 2 * half_int_win_size[1])
     dys = np.zeros((len(ys), len(xs)))
     dxs = np.zeros((len(ys), len(xs)))
+
     for iy, y in enumerate(ys):
         for ix, x in enumerate(xs):
             int_win = img1[
@@ -103,9 +104,15 @@ def correlate_and_combine(
                 max(0, search_win_y_min) : min(img2.shape[0], search_win_y_max),
                 max(0, search_win_x_min) : min(img2.shape[1], search_win_x_max),
             ]
+            # cross_corr = correlate(
+            #     truncated_search_win - np.mean(truncated_search_win),
+            #     int_win - np.mean(int_win),
+            #     mode="valid",
+            #     method="fft",
+            # )
             cross_corr = correlate(
-                truncated_search_win - np.mean(truncated_search_win),
-                int_win - np.mean(int_win),
+                truncated_search_win ,
+                int_win ,
                 mode="valid",
                 method="fft",
             )
@@ -117,17 +124,24 @@ def correlate_and_combine(
     
             # place the result in correct location
             correlation_array[start_y: end_y, start_x: end_x] = cross_corr
-    return correlation_array
+
+            dys[iy, ix], dxs[iy, ix] = (
+                np.unravel_index(np.argmax(cross_corr), cross_corr.shape) 
+                # - np.array([win_size, win_size]) + 1
+            )
+
+    return correlation_array, dxs, dys
 
 
 correlation_stack = []
+velocity_stack =[]
 
 for i in range(objectA.shape[0]):  # Iterate over possible dz values
     
     img1 = objectA[i]
     img2 = objectB[i]
 
-    correlation_array = correlate_and_combine(
+    correlation_array,dxs, dys = correlate_and_combine(
         img1=img1, 
         img2=img2, 
         half_int_win_size=half_int_win_size, 
@@ -143,8 +157,63 @@ for i in range(objectA.shape[0]):  # Iterate over possible dz values
     # Save as a 32-bit floating point TIFF image
     Image.fromarray(normalized_array.T.astype(np.float32)).save(f'./CorrelationMatrix/dz_{i * 10}.tif')
 
-print(correlation_array.shape)
+print(dys)
+print(dxs)
 
+# # ------------HEATMAP-----------------
+
+#   velocity_stack.append(np.max(v0, axis=0))  # Using the maximum velocity value along y-axis for each layer
+
+# # Convert to a numpy array for convenience
+# velocity_stack = np.array(velocity_stack)
+
+# # Now you can create a heatmap. Note that we use the `imshow` function
+# # and also include a colorbar.
+# plt.figure(figsize=(10, 8))
+# plt.imshow(velocity_stack, aspect='auto', cmap='hot', origin='lower')
+# plt.colorbar(label='Velocity')
+# plt.xlabel('Y position')
+# plt.ylabel('Z position')
+# plt.title('Velocity Heatmap')
+# plt.show()
+
+
+# -----------Velocity profile--------------
+    v0 = np.average(dxs)
+    # v0 = np.max(v0)
+    velocity_stack.append(v0)
+
+print(velocity_stack)
+
+x = range(objectA.shape[0])
+
+y = velocity_stack
+fig = plt.figure()
+ax  = fig.add_subplot(111)
+
+# Fit a parabola to the data
+coeffs = np.polyfit(x, y, 2)  # Fit a 2nd degree polynomial
+poly = np.poly1d(coeffs)  # Create a polynomial function
+yfit = poly(x)  # Generate fitted y-values
+
+# Plot
+plt.scatter(x, y, label='velocity profile')
+plt.plot(x, yfit, color='red', label='fitted curve')  # Plot the fitted curve
+
+# plt.plot(x, y, label='velocity profile')
+plt.xlabel('z')
+plt.ylabel('velocity')
+plt.title('velocity profile')
+plt.legend()
+plt.grid(True)
+plt.ylim([-4, 12])
+plt.show()
+
+
+
+
+
+print(correlation_array.shape)
 
 correlation_stack = np.stack(correlation_stack)
 np.save('corrMatrix.npy', correlation_stack)

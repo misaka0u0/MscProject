@@ -8,7 +8,7 @@ from typing import Optional
 
 
 num_points = 1500
-W, H = 511, 369 # x, y axis
+W, H = 511, 369 # x, y axis #  500* 300  / (64 * 72 ) = 
 Length = 150 # z axis
 radius = 2.0 # radius on focal plane
 Vmax = 20
