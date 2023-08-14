@@ -71,7 +71,7 @@ os.makedirs('./CorrelationMatrix', exist_ok=True)
 
 
 int_win_size = np.array([32, 32])
-search_win_size = np.array([76, 76])#36 - 32 = 4
+search_win_size = np.array([64, 64])#36 - 32 = 4
 half_int_win_size = int_win_size // 2
 half_search_win_size = search_win_size // 2
 corr_win_size = search_win_size - int_win_size + 1
