@@ -42,6 +42,7 @@ for i in range(objectA.shape[0]):
     v0 = v0 / 96.52                    #scaling_factor = 96.52 # 96.52 microns/pixel
 
 
+# ==================HeatMap================================
 #     velocity_stack.append(np.max(v0, axis=0))  # Using the maximum velocity value along y-axis for each layer
 
 # # Convert to a numpy array for convenience
@@ -59,6 +60,7 @@ for i in range(objectA.shape[0]):
 
 
 
+# ===================Velocity Profile =====================
     v0 = np.average(v0)
     # v0 = np.max(v0)
     velocity_stack.append(v0)
@@ -86,5 +88,5 @@ plt.ylabel('velocity')
 plt.title('velocity profile')
 plt.legend()
 plt.grid(True)
-plt.ylim([-4, 12])
+# plt.ylim([-4, 12])
 plt.show()

@@ -4,9 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import imageio
 
-winsize = 320 # pixels, interrogation window size in frame A 64
-searchsize = 320  # pixels, search in image B 72
-overlap = 12 # pixels, 50% overlap
+winsize = 160 # pixels, interrogation window size in frame A 64
+searchsize = 160  # pixels, search in image B 72
+overlap = 80 # pixels, 50% overlap
 dt = 0.02 # sec, time interval between pulses
 
 
@@ -39,8 +39,10 @@ for i in range(objectA.shape[0]):
                                        max_iter=3, 
                                        kernel_size=3)
 
-    v0 = v0 / 96.52                    #scaling_factor = 96.52 # 96.52 microns/pixel
+    # v0 = v0 / 96.52                    #scaling_factor = 96.52 # 96.52 microns/pixel
 
+
+# ----------HEATMAP---------------
 
 #     velocity_stack.append(np.max(v0, axis=0))  # Using the maximum velocity value along y-axis for each layer
 
@@ -59,6 +61,7 @@ for i in range(objectA.shape[0]):
 
 
 
+# ----------------Velocity Profile-----------------
     v0 = np.average(v0)
     # v0 = np.max(v0)
     velocity_stack.append(v0)
@@ -86,5 +89,5 @@ plt.ylabel('velocity')
 plt.title('velocity profile')
 plt.legend()
 plt.grid(True)
-plt.ylim([-4, 12])
+# plt.ylim([-4, 12])
 plt.show()

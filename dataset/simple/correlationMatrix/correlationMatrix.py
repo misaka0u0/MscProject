@@ -18,58 +18,6 @@ import os
 # Check if the directories exist, and if not, create them
 os.makedirs('./CorrelationMatrix', exist_ok=True)
 
-# correlation_stack = []
-
-# for i in range(objectA.shape[0]):  # Iterate over possible dz values
-    
-#     img1 = objectA[i]
-#     img2 = objectB[i]
-
-#     a_win = img1 [:win_size, :win_size].copy()
-#     b_win = img2 [:win_size, :win_size].copy()
-
-#     cross_corr = correlate(b_win - b_win.mean(), a_win - a_win.mean(), method="fft")
-
-#     correlation_stack.append(cross_corr)
-
-#     # Save the images
-#     Image.fromarray(cross_corr.T.astype(np.uint8)).save(f'./CorrelationMatrix/dz_{i * 10}.bmp')
-
-
-
-# # load images
-# objectA = np.load('stkA.npy')
-# objectB = np.load('stkB.npy')
-
-# int_win_size = 32
-# search_win_size = 36 
-
-# img1 = objectA[0]
-# img2 = objectB[0]
-
-# a_win = img1[:int_win_size, :int_win_size].copy()
-# b_win = img2[:search_win_size, :search_win_size].copy()
-
-# cross_corr = correlate(b_win - b_win.mean(), a_win - a_win.mean(), mode="same", method="fft")
-# print(cross_corr.shape)
-# # cross_corr shape in (36, 36)
-
-
-# np.save('corrMatrix.npy', correlation_stack)
-# data = np.load('filename.npy')
-
-# from mpl_toolkits.mplot3d import Axes3D
-
-# fig = plt.figure()
-# ax = fig.add_subplot(projection="3d")
-# Y, X = np.meshgrid(np.arange(cross_corr.shape[0]), np.arange(cross_corr.shape[1]))
-
-# ax.plot_surface(Y, X, correlation_stack[0], cmap='jet', linewidth=0.2)  # type: ignore
-# plt.title("Correlation map — peak is the most probable shift")
-# plt.show()
-
-
-
 int_win_size = np.array([32, 32])
 search_win_size = np.array([64, 64])#36 - 32 = 4
 half_int_win_size = int_win_size // 2
@@ -206,7 +154,7 @@ plt.ylabel('velocity')
 plt.title('velocity profile')
 plt.legend()
 plt.grid(True)
-plt.ylim([-4, 12])
+# plt.ylim([-4, 12])
 plt.show()
 
 
