@@ -4,17 +4,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import imageio
 
-winsize = 128 # pixels, interrogation window size in frame A 64
-searchsize = 256  # pixels, search in image B 72
+winsize = 64 # pixels, interrogation window size in frame A 64
+searchsize = 64  # pixels, search in image B 72
 overlap = 12 # pixels, 50% overlap
 dt = 1 # sec, time interval between pulses
 
 
-# objectA = np.load('stkA.npy')
-# objectB = np.load('stkB.npy') 
+objectA = np.load('stkA.npy')
+objectB = np.load('stkB.npy') 
 
-objectA = np.load('deconvolved_RL1.npy')
-objectB = np.load('deconvolved_RL2.npy') 
+# objectA = np.load('deconvolved_RL1.npy')
+# objectB = np.load('deconvolved_RL2.npy') 
 
 velocity_stack = []
 for i in range(objectA.shape[0]):
@@ -33,13 +33,13 @@ for i in range(objectA.shape[0]):
     flags = validation.sig2noise_val( sig2noise, 
                                   threshold = 1.05 )
 
-    # u0, v0 = filters.replace_outliers( u0, v0, 
-    #                                    flags,
-    #                                    method='localmean', 
-    #                                    max_iter=3, 
-    #                                    kernel_size=3)
+    u0, v0 = filters.replace_outliers( u0, v0, 
+                                       flags,
+                                       method='localmean', 
+                                       max_iter=3, 
+                                       kernel_size=3)
 
-    v0 = v0 / 96.52                    #scaling_factor = 96.52 # 96.52 microns/pixel
+    # v0 = v0 / 96.52                    #scaling_factor = 96.52 # 96.52 microns/pixel
 
 
 # ==================HeatMap================================
@@ -67,7 +67,7 @@ for i in range(objectA.shape[0]):
 
 print(velocity_stack)
 
-x = range(objectA.shape[0])
+x = np.arange(objectA.shape[0])
 
 y = velocity_stack
 fig = plt.figure()
@@ -81,6 +81,13 @@ yfit = poly(x)  # Generate fitted y-values
 # Plot
 plt.scatter(x, y, label='velocity profile')
 plt.plot(x, yfit, color='red', label='fitted curve')  # Plot the fitted curve
+
+
+# Define the function f(x, y)
+def f(x):
+    return 20 * (1 - (np.abs(x * 10 - 150) / 150) ** 2)  # - (np.abs(self.y - 185) / 185 ) ** 2) 
+plt.plot(x, f(x), color='green', label='raw curve')
+
 
 # plt.plot(x, y, label='velocity profile')
 plt.xlabel('z')

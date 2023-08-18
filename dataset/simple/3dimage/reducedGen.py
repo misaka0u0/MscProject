@@ -31,7 +31,7 @@ class Point:
         self.x = np.random.randint(int(size), int(W - size))
         self.y = np.random.randint(int(size), int(H - size))
         self.z = np.random.randint(-int(Length), int(Length))
-        self.vx = vx if vx is not None else Vmax * (1 - (abs(self.z) / 150) ** 2)
+        self.vx = vx if vx is not None else Vmax * (1 - (np.abs(self.z) / 150) ** 2)
         self.vy = vy if vy is not None else 0
         self.dz = dz if dz is not None else 0
         self.size = size * np.sqrt(1 + ((self.z - self.dz) / Zr) ** 2)  # + 0.02 * self.z
