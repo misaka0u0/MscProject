@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import imageio.v2 as imageio
+import tifffile
 from PIL import Image
 
 from scipy.signal import convolve2d as conv2
@@ -14,8 +15,8 @@ img2 = np.load('stkB.npy')
 
 
 # Restore Image using Richardson-Lucy algorithm
-deconvolved_RL1 = restoration.richardson_lucy(img1, psf, num_iter=50,clip=False)
-deconvolved_RL2 = restoration.richardson_lucy(img2, psf, num_iter=50,clip=False)
+deconvolved_RL1 = restoration.richardson_lucy(img1, psf, num_iter=150,clip=False)
+deconvolved_RL2 = restoration.richardson_lucy(img2, psf, num_iter=150,clip=False)
 
 # plt.imshow(deconvolved_RL, cmap = plt.cm.gray)
 # plt.show()
@@ -27,8 +28,8 @@ os.makedirs('./deconvolved_images1', exist_ok=True)
 os.makedirs('./deconvolved_images2', exist_ok=True)
 
 # Normalize the image data to 0-255
-deconvolved_RL1 = ((deconvolved_RL1 - deconvolved_RL1.min()) * (1/(deconvolved_RL1.max() - deconvolved_RL1.min()) * 255)).astype('uint8')
-deconvolved_RL2 = ((deconvolved_RL2 - deconvolved_RL2.min()) * (1/(deconvolved_RL2.max() - deconvolved_RL2.min()) * 255)).astype('uint8')
+# deconvolved_RL1 = ((deconvolved_RL1 - deconvolved_RL1.min()) * (1/(deconvolved_RL1.max() - deconvolved_RL1.min()) * 255)).astype('uint8')
+# deconvolved_RL2 = ((deconvolved_RL2 - deconvolved_RL2.min()) * (1/(deconvolved_RL2.max() - deconvolved_RL2.min()) * 255)).astype('uint8')
 
 # Iterate over the image stack
 for i in range(deconvolved_RL1.shape[0]):
@@ -47,3 +48,7 @@ for i in range(deconvolved_RL2.shape[0]):
 
 np.save('deconvolved_RL1.npy', deconvolved_RL1)
 np.save('deconvolved_RL2.npy', deconvolved_RL2)
+
+sidedec1 = np.max(deconvolved_RL1[:,:,10:40], axis=2)
+sidedec2 = np.max(deconvolved_RL2[:,:,10:40], axis=2)
+tifffile.imwrite('sidedec.tif', np.array([sidedec1, sidedec2]))

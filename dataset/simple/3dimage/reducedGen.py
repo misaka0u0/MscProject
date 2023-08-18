@@ -4,6 +4,7 @@ from operator import length_hint
 import numpy as np
 from PIL import Image
 from typing import Optional
+import tifffile
 
 
 
@@ -87,6 +88,7 @@ for dz in range(-Length, Length + 1, 10):  # Iterate over possible dz values
     image_stack1.append(img1)
     image_stack2.append(img2)
 
+
     # Save the images
     Image.fromarray(img1.T.astype(np.uint8)).save(f'./image_stack1/dz_{dz+150}.bmp')
     Image.fromarray(img2.T.astype(np.uint8)).save(f'./image_stack2/dz_{dz+150}.bmp')
@@ -105,3 +107,8 @@ np.save('stkB.npy', image_stack2)
 # np.savetxt only works for 1d or 2d array,
 # not a stack of 2d arrays or 3d
 
+
+
+sideraw1 = np.max(image_stack1[:,:,10:40], axis=2)
+sideraw2 = np.max(image_stack2[:,:,10:40], axis=2)
+tifffile.imwrite('sideraw.tif', np.array([sideraw1, sideraw2]))

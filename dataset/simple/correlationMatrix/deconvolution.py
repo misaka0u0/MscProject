@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import imageio.v2 as imageio
+import tifffile
 from PIL import Image
 
 from scipy.signal import convolve2d as conv2
@@ -12,14 +13,16 @@ psf = np.load('PSF.npy')
 corrMatrix = np.load('corrMatrix.npy')
 
 int_win_size = np.array([32, 32])
-search_win_size = np.array([36, 36])
+search_win_size = np.array([64, 64])
+half_int_win_size = int_win_size // 2
+half_search_win_size = search_win_size // 2
 corr_win_size = search_win_size - int_win_size + 1
-half_corr_win_size = corr_win_size // 2
+half_corr_win_size = (corr_win_size - 1) // 2 + 1
 
 # plt.imshow(np.max(img1, axis=1), aspect=8.0)
 
 # Restore Image using Richardson-Lucy algorithm
-deconvolved_Matrix = restoration.richardson_lucy(corrMatrix, psf, num_iter=20,clip=False)
+deconvolved_Matrix = restoration.richardson_lucy(corrMatrix, psf, num_iter=50,clip=False)
 
 
 
@@ -69,10 +72,18 @@ for i in range(deconvolved_Matrix.shape[0]):
             start_x = ix * corr_win_size[1]
             end_x = start_x + corr_win_size[1]
             if end_y <= img.shape[0] and end_x <= img.shape[1]:
-                dy, dx = np.unravel_index(np.argmax(img[start_y: end_y, start_x: end_x]), corr_win_size)
+                dy, dx = (np.unravel_index(np.argmax(img[start_y: end_y, start_x: end_x]), corr_win_size) 
+                    - half_corr_win_size)
 
             dys[iy, ix] = dy
             
+    # print(dys)              # []        (xxxx)
+    # print(dys.shape)        # (0, 3)    (0, 10)
+    # print(img.shape[0])     # 330       330
+    # print(img.shape[1])     # 330       330
+    # print(corr_win_size[0]) # 129       33
+    # print(corr_win_size[1]) # 129       33
+
     v0 = np.average(dys) # 0d s
     velocity_stack.append(v0)
     # velocity_stack_2d.append(dys) # 2d s
@@ -101,7 +112,7 @@ plt.legend()
 plt.grid(True)
 plt.show()
 
-
+# #  ============ Heat Map =================
 
 # # Convert to a numpy array for convenience
 # velocity_stack_2d = np.array(velocity_stack_2d)
@@ -116,6 +127,7 @@ plt.show()
 # plt.title('Velocity Heatmap')
 # plt.show()
 
+#  ============= first correlation Map=============
 from mpl_toolkits.mplot3d import Axes3D
 
 fig = plt.figure()
@@ -125,3 +137,7 @@ Y, X = np.meshgrid(np.arange(deconvolved_Matrix.shape[1]), np.arange(deconvolved
 ax.plot_surface(Y, X, deconvolved_Matrix[0].T, cmap='jet', linewidth=0.2)  # type: ignore
 plt.title("Correlation map — peak is the most probable shift")
 plt.show()
+
+
+sidedec = np.max(deconvolved_Matrix[:,:,10:40], axis=2)
+tifffile.imwrite('sidedec.tif', sidedec)

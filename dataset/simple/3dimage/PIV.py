@@ -4,10 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import imageio
 
-winsize = 160 # pixels, interrogation window size in frame A 64
-searchsize = 160  # pixels, search in image B 72
-overlap = 80 # pixels, 50% overlap
-dt = 0.02 # sec, time interval between pulses
+winsize =64 # pixels, interrogation window size in frame A 64
+searchsize =64  # pixels, search in image B 72
+overlap = 16 # pixels, 50% overlap
+dt = 1 # sec, time interval between pulses
 
 
 objectA = np.load('stkA.npy')
@@ -33,11 +33,11 @@ for i in range(objectA.shape[0]):
     flags = validation.sig2noise_val( sig2noise, 
                                   threshold = 1.05 )
 
-    u0, v0 = filters.replace_outliers( u0, v0, 
-                                       flags,
-                                       method='localmean', 
-                                       max_iter=3, 
-                                       kernel_size=3)
+    # u0, v0 = filters.replace_outliers( u0, v0, 
+    #                                    flags,
+    #                                    method='localmean', 
+    #                                    max_iter=3, 
+    #                                    kernel_size=3)
 
     # v0 = v0 / 96.52                    #scaling_factor = 96.52 # 96.52 microns/pixel
 
@@ -46,7 +46,7 @@ for i in range(objectA.shape[0]):
 
 #     velocity_stack.append(np.max(v0, axis=0))  # Using the maximum velocity value along y-axis for each layer
 
-# # Convert to a numpy array for convenience
+# # Convert to a numpy array for convenienceto filters.replace_outliers
 # velocity_stack = np.array(velocity_stack)
 
 # # Now you can create a heatmap. Note that we use the `imshow` function
@@ -62,8 +62,8 @@ for i in range(objectA.shape[0]):
 
 
 # ----------------Velocity Profile-----------------
-    v0 = np.average(v0)
-    # v0 = np.max(v0)
+    # v0 = np.average(v0)
+    v0 = np.max(v0)
     velocity_stack.append(v0)
 
 print(velocity_stack)

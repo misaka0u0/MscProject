@@ -5,6 +5,7 @@ from matplotlib import image
 from PIL import Image
 from typing import Optional
 import numpy as np
+import tifffile
 
 from scipy.signal import correlate
 
@@ -12,7 +13,7 @@ from scipy.signal import correlate
 objectA = np.load('stkA.npy')
 objectB = np.load('stkB.npy')
 
-win_size = 32
+# win_size = 32
 
 import os
 # Check if the directories exist, and if not, create them
@@ -73,10 +74,30 @@ def correlate_and_combine(
             # place the result in correct location
             correlation_array[start_y: end_y, start_x: end_x] = cross_corr
 
-            dys[iy, ix], dxs[iy, ix] = (
-                np.unravel_index(np.argmax(cross_corr), cross_corr.shape) 
-                # - np.array([win_size, win_size]) + 1
-            )
+
+# # ======origin============
+            # dys[iy, ix], dxs[iy, ix] = (
+            #     np.unravel_index(np.argmax(cross_corr), cross_corr.shape) 
+            #     # - np.array([win_size, win_size]) + 1
+            # )
+
+
+# =========modified=============
+            dy, dx = np.unravel_index(np.argmax(cross_corr), cross_corr.shape)
+            # if the top of the search window got truncated, shift the origin
+            # up to the top edge of the (non-truncated) search window
+            if search_win_y_min < 0:
+                dy += -search_win_y_min
+            # if the left of the search window got truncated, shift the origin
+            # over to the left edge of the (non-truncated) search window
+            if search_win_x_min < 0:
+                dx += -search_win_x_min
+            # shift origin to the center of the search window
+            # dy -= half_search_win_size[0] - half_int_win_size[0] + 1
+            # dx -= half_search_win_size[1] - half_int_win_size[1] + 1
+            dys[iy, ix] = dy
+            dxs[iy, ix] = dx
+
 
     return correlation_array, dxs, dys
 
@@ -176,3 +197,7 @@ Y, X = np.meshgrid(np.arange(correlation_array.shape[0]), np.arange(correlation_
 ax.plot_surface(Y, X, correlation_stack[0].T, cmap='jet', linewidth=0.2)  # type: ignore
 plt.title("Correlation map — peak is the most probable shift")
 plt.show()
+
+
+sideraw = np.max(correlation_stack[:,:,10:40], axis=2)
+tifffile.imwrite('sideraw.tif', sideraw)

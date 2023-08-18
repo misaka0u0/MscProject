@@ -7,7 +7,7 @@ import imageio
 winsize = 128 # pixels, interrogation window size in frame A 64
 searchsize = 256  # pixels, search in image B 72
 overlap = 12 # pixels, 50% overlap
-dt = 0.02 # sec, time interval between pulses
+dt = 1 # sec, time interval between pulses
 
 
 # objectA = np.load('stkA.npy')
@@ -33,11 +33,11 @@ for i in range(objectA.shape[0]):
     flags = validation.sig2noise_val( sig2noise, 
                                   threshold = 1.05 )
 
-    u0, v0 = filters.replace_outliers( u0, v0, 
-                                       flags,
-                                       method='localmean', 
-                                       max_iter=3, 
-                                       kernel_size=3)
+    # u0, v0 = filters.replace_outliers( u0, v0, 
+    #                                    flags,
+    #                                    method='localmean', 
+    #                                    max_iter=3, 
+    #                                    kernel_size=3)
 
     v0 = v0 / 96.52                    #scaling_factor = 96.52 # 96.52 microns/pixel
 

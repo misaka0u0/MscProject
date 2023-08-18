@@ -12,14 +12,14 @@ psf = np.load('PSF.npy')
 corrMatrix = np.load('corrMatrix.npy')
 
 int_win_size = np.array([32, 32])
-search_win_size = np.array([36, 36])
+search_win_size = np.array([76, 76])
 corr_win_size = search_win_size - int_win_size + 1
 half_corr_win_size = corr_win_size // 2
 
 # plt.imshow(np.max(img1, axis=1), aspect=8.0)
 
 # Restore Image using Richardson-Lucy algorithm
-deconvolved_Matrix = restoration.richardson_lucy(corrMatrix, psf, num_iter=20,clip=False)
+deconvolved_Matrix = restoration.richardson_lucy(corrMatrix, psf, num_iter=50,clip=False)
 
 
 
@@ -101,7 +101,7 @@ plt.legend()
 plt.grid(True)
 plt.show()
 
-
+# #  ============ Heat Map =================
 
 # # Convert to a numpy array for convenience
 # velocity_stack_2d = np.array(velocity_stack_2d)
@@ -116,6 +116,7 @@ plt.show()
 # plt.title('Velocity Heatmap')
 # plt.show()
 
+#  ============= first correlation Map=============
 from mpl_toolkits.mplot3d import Axes3D
 
 fig = plt.figure()
