@@ -10,8 +10,8 @@ from scipy.signal import correlate
 
 num_points = 1
 W, H = 40, 40 # x, y axis
-Length = 150 # z axis
-radius = 2.0 # radius on focal plane
+DEPTH = 150 # z axis
+RADIUS = 2.0 # radius on focal plane
 # Vz = 15 # velocity max caculated with V(y, z), flows through x-axis
 Zr = 80 # Rayleigh length
 
@@ -54,9 +54,9 @@ import os
 os.makedirs('./PSF', exist_ok=True)
 
 correlation_stack = []
-for dz in range(-Length*2, Length*2 + 1, 10):  # Iterate over possible dz values
+for dz in range(-DEPTH*2, DEPTH*2 + 1, 10):  # Iterate over possible dz values
     point_groups = []
-    points = [Point(radius, dz=dz) for _ in range(num_points)]  # Initialize points with the current dz
+    points = [Point(RADIUS, dz=dz) for _ in range(num_points)]  # Initialize points with the current dz
     point_groups.append(points)
 
     # Initialize the images

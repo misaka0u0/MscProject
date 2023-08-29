@@ -21,6 +21,10 @@ half_corr_win_size = (corr_win_size - 1) // 2 + 1
 
 # plt.imshow(np.max(img1, axis=1), aspect=8.0)
 
+psf /= np.sum(psf)
+psf[psf<0] = 0
+
+
 # Restore Image using Richardson-Lucy algorithm
 deconvolved_Matrix = restoration.richardson_lucy(corrMatrix, psf, num_iter=50,clip=False)
 

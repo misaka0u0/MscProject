@@ -14,7 +14,7 @@ frame_b = tools.imread('./image2.bmp')
 winsize = 32 # pixels, interrogation window size in frame A
 searchsize = 38  # pixels, search in image B
 overlap = 12 # pixels, 50% overlap
-dt = 0.02 # sec, time interval between pulses
+dt = 1 # sec, time interval between pulses
 
 
 u0, v0, sig2noise = pyprocess.extended_search_area_piv(frame_a.astype(np.int32), 

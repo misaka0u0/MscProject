@@ -12,7 +12,6 @@ psf = np.load('PSF.npy')
 img1 = np.load('stkA.npy')
 img2 = np.load('stkB.npy')
 
-
 # Restore Image using Richardson-Lucy algorithm
 deconvolved_RL1 = restoration.richardson_lucy(img1, psf, num_iter=150,clip=False)
 deconvolved_RL2 = restoration.richardson_lucy(img2, psf, num_iter=150,clip=False)
