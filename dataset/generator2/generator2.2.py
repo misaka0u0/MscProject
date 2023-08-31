@@ -5,7 +5,7 @@ from PIL import Image
 
 width, height = 511, 369
 radius = 2
-num_points = 500
+num_points = 1000
 intensity = 125
 
 np.random.seed(42)

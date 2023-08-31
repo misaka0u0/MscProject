@@ -5,14 +5,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import PIL
 from alive_progress import alive_it
-from numpy import ndarray
+from numpy import float32, ndarray
 from scipy.signal import correlate
+from mpl_toolkits.mplot3d import Axes3D
 
 output_dir = "./CorrelationMatrix"
 
 ndarray2: TypeAlias = ndarray
 ndarray3: TypeAlias = ndarray
 ndarray4: TypeAlias = ndarray
+ndarray5: TypeAlias = ndarray
 
 
 def get_zero_padding_offset(original_shape: ndarray | tuple[int], target_shape: ndarray | tuple[int]) -> ndarray2:
@@ -66,7 +68,7 @@ def correlate_and_combine(
     window_grid_resolution: ndarray2 = current_frame.shape // interrogation_window_shape
     correlation_results: ndarray4 = np.zeros(np.concatenate((window_grid_resolution, correlation_patch_result_size)))
 
-    # Kernel center grid coords -> pixel coords  # (w, h, (pixel_y, pixel_x))
+    # Kernel center grid coords -> pixel coords  # (h, w, (pixel_y, pixel_x))
     # E.g. kernel_centers[2, 3] -> [64, 96]
     kernel_centers: ndarray3 = np.zeros([window_grid_resolution[0], window_grid_resolution[1], 2], dtype=int)
     center_ys = np.arange(interrogation_window_shape[0] // 2, current_frame.shape[0], interrogation_window_shape[0])
@@ -74,7 +76,7 @@ def correlate_and_combine(
     grid_ys, grid_xs = np.meshgrid(center_ys, center_xs)
     kernel_centers = np.c_[np.expand_dims(grid_ys, -1), np.expand_dims(grid_xs, -1)]
 
-    correlation_maximum_offsets: ndarray3 = np.zeros_like(kernel_centers)  # (y, x, [dy, dx])
+    correlation_maximum_offsets: ndarray3 = np.zeros_like(kernel_centers, dtype=float32)  # (y, x, [dy, dx])
 
     for grid_coord in np.ndindex(kernel_centers.shape[:-1]):
         pixel_center = kernel_centers[grid_coord]
@@ -91,6 +93,7 @@ def correlate_and_combine(
         search_window = padded_next_frame[
             create_selection_from_center(center=pixel_center + padding_offset, shape=search_window_shape)
         ]
+
 
         # Compute the cross-correlations
         cross_corr = correlate(
@@ -125,12 +128,13 @@ def main():
     velocity_stack = []
     velocity_x_stack = []
 
+    # (z, grid_y, grid_x, [y, x]) ->   (z, [y, x])
     # Iterate over possible dz values
     for depth, (current_frame, next_frame) in alive_it(enumerate(zip(current_frames, next_frames))):
         correlation_matrix, peak_offsets = correlate_and_combine(
             current_frame=current_frame,
             next_frame=next_frame,
-            interrogation_window_shape=(80, 80),
+            interrogation_window_shape=(80, 80), # 32, 64; 80, 120
             search_window_shape=(120, 120),
         )
 
@@ -139,14 +143,14 @@ def main():
         # Save output
         # Normalize to [0, 1]
         normalized_correlation = normalize(correlation_matrix)
-        correlation_2d_layout_stack.append(normalized_correlation)
+        correlation_2d_layout_stack.append(correlation_matrix)
         h, w, y, x = normalized_correlation.shape
 
         output_2d_layout = normalized_correlation.transpose((0, 2, 1, 3)).reshape((h * y, w * x))
 
         # Save as a 32-bit floating point TIFF image
         os.makedirs(output_dir, exist_ok=True)
-        PIL.Image.fromarray(output_2d_layout.__mul__(255).T.astype(np.uint8), mode="L").save(
+        PIL.Image.fromarray(output_2d_layout.__mul__(255).astype(np.uint8), mode="L").save(
             os.path.join(output_dir, f"dz_{depth * 10}.tif")
         )
 
@@ -158,14 +162,20 @@ def main():
         velocity_x_stack.append(v_x)
         velocity_stack.append(peak_offsets)
 
-    # plot_velocity_curve(correlation_2d_layout_stack, velocity_stack)
+    correlation_stack: ndarray5 = np.stack(correlation_2d_layout_stack)
+    np.save('corr_matrix.npy', correlation_stack)
+    # print(f'the shape of corr_matrix is:', correlation_stack.shape)
+    print(velocity_x_stack)
+
+    plot_velocity_curve(velocity_x_stack)
     # plot_zox_view(correlation_2d_layout_stack)
-    plot_zoy_view(velocity_stack)
-    # plt.show()
+    # plot_zoy_view(velocity_stack)
+    # plot_surface(output_2d_layout)
+    plt.show()
 
 
-def plot_velocity_curve(correlation_stack: list[np.ndarray], velocity_stack: list[np.ndarray]):
-    zs = list(range(correlation_stack[0].shape[0]))
+def plot_velocity_curve(velocity_stack: list[np.ndarray]) -> plt.Axes:
+    zs = list(range(len(velocity_stack)))
     vx_s = velocity_stack
 
     fig = plt.figure()
@@ -181,6 +191,12 @@ def plot_velocity_curve(correlation_stack: list[np.ndarray], velocity_stack: lis
     plt.scatter(x=zs, y=vx_s, label="velocity profile")
     plt.plot(zs, y_fit, color="red", label="fitted curve")
 
+
+    zs = np.array(zs)
+    # Define the function f(x, y)
+    def f(x):
+        return 8 * (1 - (np.abs(x * 10 - 150) / 150) ** 2)
+    plt.plot(zs, f(zs), color='green', label='raw curve')
     plt.xlabel("z")
     plt.ylabel("velocity")
     plt.title("velocity profile")
@@ -196,31 +212,36 @@ def plot_zox_view(correlation_2d_layout_stack: list[np.ndarray]) -> plt.Axes:
     zox[::z, :] = 0
     zox[:, ::x] = 0
 
+    plt.xlabel("x")
+    plt.ylabel("z")
+    plt.title("zox_view")
     plt.imshow(zox, cmap='gray')
-    plt.show()
     return plt.gca()
 
 
 def plot_zoy_view(velocity_stack: list[ndarray3]) -> plt.Axes:
     arr = np.array(velocity_stack)  # (z, grid_y, grid_x, (v_y, v_x))
     zoy = arr[..., 1].mean(-1)  # (z, h)
-
+    
+    plt.xlabel("x")
+    plt.ylabel("z")
+    plt.title("zox_view")
     plt.imshow(zoy, cmap='gray')
-    plt.show()
     return plt.gca()
 
 
 def plot_surface(correlation_matrix: ndarray3) -> plt.Axes:
     fig = plt.figure()
     ax = fig.add_subplot(projection="3d")
-    print(correlation_matrix.shape)
-    w, h = correlation_matrix.shape
+    correlation_matrix = np.array(correlation_matrix)
+    selected_correlation_matrix = correlation_matrix
+    print(selected_correlation_matrix.shape)
+    h, w = selected_correlation_matrix.shape
     Y, X = np.meshgrid(np.arange(w), np.arange(h))
 
-    ax.plot_surface(Y, X, correlation_matrix.T, cmap="jet", linewidth=0.2)  # type: ignore
+    ax.plot_surface(Y, X, selected_correlation_matrix, cmap="jet", linewidth=0.2)  # type: ignore
     plt.title("Correlation map — peak is the most probable shift")
     return ax
-
 
 if __name__ == "__main__":
     main()

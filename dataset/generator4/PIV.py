@@ -12,7 +12,7 @@ frame_b = tools.imread('./image2.bmp')
 # img2 = ax[1].imshow(frame_b, cmap = plt.cm.gray)
 
 winsize = 32 # pixels, interrogation window size in frame A
-searchsize = 38  # pixels, search in image B
+searchsize = 48  # pixels, search in image B
 overlap = 12 # pixels, 50% overlap
 dt = 1 # sec, time interval between pulses
 
@@ -37,7 +37,7 @@ flags = validation.sig2noise_val( sig2noise,
 flags_g = validation.global_val( u0, v0, (-15, 15), (-15, 15) )
 # flags = flags | flags_g
 
-u2, v2 = filters.replace_outliers( u0, v0, 
+u, v = filters.replace_outliers( u0, v0, 
                                    flags,
                                    method='localmean', 
                                    max_iter=3, 
@@ -45,10 +45,10 @@ u2, v2 = filters.replace_outliers( u0, v0,
 
 # print(flags)
 
-x, y, u3, v3 = scaling.uniform(x, y, u2, v2, 
-                               scaling_factor = 96.52 ) # 96.52 microns/pixel
+# x, y, u, v = scaling.uniform(x, y, u, v, 
+#                                scaling_factor = 96.52 ) # 96.52 microns/pixel
 
-x, y, u3, v3 = tools.transform_coordinates(x, y, u3, v3)
+x, y, u3, v3 = tools.transform_coordinates(x, y, u, v)
 
 tools.save('Analysis.txt', x, y, u3, v3, flags)
 
