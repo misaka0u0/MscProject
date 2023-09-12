@@ -163,6 +163,9 @@ def main():
         velocity_stack.append(peak_offsets)
 
     correlation_stack: ndarray5 = np.stack(correlation_2d_layout_stack)
+    
+    correlation_stack[correlation_stack<0] = 0
+
     np.save('corr_matrix.npy', correlation_stack)
     # print(f'the shape of corr_matrix is:', correlation_stack.shape)
     print(velocity_x_stack)
@@ -195,7 +198,7 @@ def plot_velocity_curve(velocity_stack: list[np.ndarray]) -> plt.Axes:
     zs = np.array(zs)
     # Define the function f(x, y)
     def f(x):
-        return 8 * (1 - (np.abs(x * 10 - 150) / 150) ** 2)
+        return 15 * (1 - (np.abs(x * 10 - 150) / 150) ** 2)
     plt.plot(zs, f(zs), color='green', label='raw curve')
     plt.xlabel("z")
     plt.ylabel("velocity")
@@ -209,8 +212,8 @@ def plot_zox_view(correlation_2d_layout_stack: list[np.ndarray]) -> plt.Axes:
     arr = np.array(correlation_2d_layout_stack)  # (z, grid_y, grid_x, corr_y, corr_x)
     z, h, w, _y, x = arr.shape
     zox = arr.max(axis=-2).transpose((1, 0, 2, 3)).reshape((h * z, w * x))
-    zox[::z, :] = 0
-    zox[:, ::x] = 0
+    # zox[::z, :] = 0
+    # zox[:, ::x] = 0
 
     plt.xlabel("x")
     plt.ylabel("z")
@@ -225,7 +228,7 @@ def plot_zoy_view(velocity_stack: list[ndarray3]) -> plt.Axes:
     
     plt.xlabel("x")
     plt.ylabel("z")
-    plt.title("zox_view")
+    plt.title("zoy_view")
     plt.imshow(zoy, cmap='gray')
     return plt.gca()
 

@@ -12,7 +12,7 @@ num_points = 1200
 W, H = 320, 320 # x, y axis #  500* 300  / (64 * 72 ) = 
 DEPTH = 150 # z axis
 radius = 2.0 # radius on focal plane
-Vmax = 8
+Vmax = 15
 # Vz = 15 # velocity max caculated with V(y, z), flows through x-axis
 Zr = 80 # Rayleigh length
 

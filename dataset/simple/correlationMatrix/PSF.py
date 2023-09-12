@@ -84,6 +84,10 @@ for dz in range(-DEPTH*2, DEPTH*2 + 1, 10):  # Iterate over possible dz values
 # Convert the list of 2D arrays into a 3D numpy array
 correlation_stack = np.stack(correlation_stack)
 
+correlation_stack /= np.sum(correlation_stack)
+correlation_stack[correlation_stack<0] = 0
+
+
 np.save('PSF.npy', correlation_stack)
 # data = np.load('filename.npy')
 
